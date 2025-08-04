@@ -1,0 +1,30 @@
+[project]
+name = "raglens"
+version = "0.1.1"
+description = "Embedding diagnostics toolkit for RAG systems"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "ipykernel>=6.30.0",
+    "matplotlib>=3.10.3",
+    "openai>=1.98.0",
+    "scikit-learn>=1.7.1",
+    "streamlit>=1.47.1",
+    "torch>=2.7.1",
+    "transformers>=4.54.1",
+    "umap-learn>=0.5.9.post2",
+]
+
+[tool.setuptools.packages.find]
+where = ["raglens"]
+include = ["raglens*"]
+
+[build-system]
+requires = [
+    "setuptools>=67.7.2",
+    "wheel>=0.40.0",
+]
+build-backend = "setuptools.build_meta"
+
+[project.urls]
+Homepage = "https://github.com/gegedenice/raglens"
