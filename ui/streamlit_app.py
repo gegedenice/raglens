@@ -244,4 +244,4 @@ with tab8:
             st.pyplot(result)
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("Made with ❤️ by SmartBibl.IA. [GitHub](https://github.com/your-repo)")
+st.sidebar.markdown("Made by SmartBibl.IA. [GitHub](https://github.com/gegedenice/raglens)")

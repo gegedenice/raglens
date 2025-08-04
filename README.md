@@ -102,6 +102,12 @@ model = EmbeddingModel(model_name="...", model_dir="./my_models")
 ```python
 print("Supported pooling strategies:", model.get_supported_strategies())
 ```
+
+---
+
+## Model Compatibility
+
+Supports any HuggingFace-compatible encoder-based transformer model. Pooling strategies adapt based on architecture (e.g., CLS only enabled if present).
 ---
 
 ## Function Reference
@@ -219,11 +225,12 @@ streamlit run ui/streamlit_app.py
 - **Internationalization-ready:** Tab descriptions support both English and French (via the `help` argument).
 - **Easy to extend:** Add new diagnostics or explanations by adding new tabs.
 
----
+### Screenshots
 
-## Model Compatibility
-
-Supports any HuggingFace-compatible encoder-based transformer model. Pooling strategies adapt based on architecture (e.g., CLS only enabled if present).
+![](screenshots/retrieval1.png)
+![](screenshots/retrieval2.png)
+![](screenshots/retrieval3.png)
+![](screenshots/retrieval4.png)
 
 ---
 
