@@ -108,6 +108,7 @@ print("Supported pooling strategies:", model.get_supported_strategies())
 ## Model Compatibility
 
 Supports any HuggingFace-compatible encoder-based transformer model. Pooling strategies adapt based on architecture (e.g., CLS only enabled if present).
+
 ---
 
 ## Function Reference
