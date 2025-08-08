@@ -87,14 +87,14 @@ You can use `uv` as a drop-in replacement for `pip` in all commands throughout t
 Raglens uses a flexible embedding interface:
 
 ```python
-from raglens.embeddings import EmbeddingModel
-model = EmbeddingModel(model_name="sentence-transformers/all-MiniLM-L6-v2")
+from raglens import embeddings
+model = embeddings.EmbeddingModel(model_name="sentence-transformers/all-MiniLM-L6-v2")
 ```
 
 ### Optional: Custom Model Storage
 
 ```python
-model = EmbeddingModel(model_name="...", model_dir="./my_models")
+model = embeddings.EmbeddingModel(model_name="...", model_dir="./my_models")
 ```
 
 ### Automatic Strategy Support Detection
