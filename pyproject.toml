@@ -1,6 +1,6 @@
 [project]
 name = "raglens"
-version = "0.1.2"
+version = "0.1.4"
 description = "Embedding diagnostics toolkit for RAG systems"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [tool.setuptools.packages.find]
-where = ["raglens"]
+where = ["."]
 include = ["raglens*"]
 
 [build-system]
