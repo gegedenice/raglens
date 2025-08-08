@@ -1,12 +1,8 @@
 import streamlit as st
 import os
-from raglens.embeddings import EmbeddingModel
-from raglens.visualization import (
-    plot_token_geometry, plot_chunk_geometry, compare_pooling_methods,
-    semantic_similarity_matrix, embedding_distribution_stats, layerwise_token_drift,
-    chunking_length, chunking_sanity
-)
-from raglens.retrieval import ChunkRetriever, compare_retrieval_pooling
+from raglens import embeddings
+from raglens import visualization
+from raglens import retrieval
 import io
 from contextlib import redirect_stdout
 
@@ -31,7 +27,7 @@ if api_key:
 # Load model
 @st.cache_resource(show_spinner=True)
 def load_model(model_name, model_dir):
-    return EmbeddingModel(model_name=model_name, model_dir=model_dir or None)
+    return embeddings.EmbeddingModel(model_name=model_name, model_dir=model_dir or None)
 
 model = load_model(model_name, model_dir)
 tokenizer = model.tokenizer
@@ -68,7 +64,7 @@ with tab1:
     method = st.selectbox("Dimensionality Reduction", ["pca", "umap"], key="token_geometry_method")
     if st.button("Visualize Token Geometry", key="token_geometry_btn"):
         token_embeddings, tokens, _ = model.embed_text(text)
-        result = plot_token_geometry(
+        result = visualization.plot_token_geometry(
             token_embeddings, tokens, method=method,
             generate_explanation=generate_explanation, api_key=api_key, language=language
         )
@@ -89,7 +85,7 @@ with tab2:
     token_strs = st.text_input("Tokens to Track (comma-separated)", "authors,learning,functions", key="drift_tokens")
     token_list = [t.strip() for t in token_strs.split(",") if t.strip()]
     if st.button("Show Layerwise Drift", key="drift_btn"):
-        result = layerwise_token_drift(
+        result = visualization.layerwise_token_drift(
             text2, model, token_list,
             generate_explanation=generate_explanation, api_key=api_key, language=language
         )
@@ -107,7 +103,7 @@ with tab3:
     text3 = st.text_area("Input Text for Pooling", text_example, key="pooling_text")
     strategies = st.multiselect("Pooling Strategies", model.get_supported_strategies(), default=model.get_supported_strategies(), key="pooling_strategies")
     if st.button("Compare Pooling Methods", key="pooling_btn"):
-        result = compare_pooling_methods(
+        result = visualization.compare_pooling_methods(
             model, text3, strategies=strategies,
             generate_explanation=generate_explanation, api_key=api_key, language=language
         )
@@ -127,7 +123,7 @@ with tab4:
     text4 = st.text_area("Input Text for Stats", text_example, key="stats_text")
     if st.button("Show Embedding Stats", key="stats_btn"):
         token_embeddings, _, _ = model.embed_text(text4)
-        result = embedding_distribution_stats(
+        result = visualization.embedding_distribution_stats(
             token_embeddings, generate_explanation=generate_explanation, api_key=api_key, language=language
         )
         if generate_explanation and isinstance(result, tuple):
@@ -148,7 +144,7 @@ with tab5:
         if not(chunk_list and any(chunk_list)):
             st.error("Please provide some chunks or text to chunk.")
         chunks = [c for c in chunk_list if c.strip()]
-        fig = chunking_length(chunks, tokenizer, generate_explanation=generate_explanation, api_key=api_key, language=language)
+        fig = visualization.chunking_length(chunks, tokenizer, generate_explanation=generate_explanation, api_key=api_key, language=language)
         if generate_explanation and isinstance(fig, tuple):
             fig, explanation = fig
             st.pyplot(fig)
@@ -158,7 +154,7 @@ with tab5:
         st.write("Chunking Sanity Table:")
         #chunking_sanity(chunks, tokenizer, highlight_overlap=True)
         with io.StringIO() as buf, redirect_stdout(buf):
-            chunking_sanity(chunks, tokenizer, highlight_overlap=True)
+            visualization.chunking_sanity(chunks, tokenizer, highlight_overlap=True)
             output = buf.getvalue()
         st.text(output)
 
@@ -176,7 +172,7 @@ with tab6:
         if not(chunk_list2 and any(chunk_list2)):
             st.error("Please provide some chunks or text to chunk.")
         chunks2 = [c for c in chunk_list2 if c.strip()]
-        result = plot_chunk_geometry(
+        result = visualization.plot_chunk_geometry(
             chunks2, model, strategy=strategy, method=method2, query=query,
             generate_explanation=generate_explanation, api_key=api_key, language=language
         )
@@ -196,7 +192,7 @@ with tab7:
     chunk_list3 = st.text_area("Or paste chunks (one per line)", chunks_example, key="similarity_chunks").splitlines()
     strategies2 = st.multiselect("Pooling Strategies", model.get_supported_strategies(), default=model.get_supported_strategies(), key="similarity_strategies")
     if st.button("Show Semantic Similarity", key="similarity_btn"):
-        result = semantic_similarity_matrix(
+        result = visualization.semantic_similarity_matrix(
             chunk_list3, model, strategies=strategies2,
             generate_explanation=generate_explanation, api_key=api_key, language=language
         )
@@ -223,16 +219,16 @@ with tab8:
         if not query2:
             st.error("Please provide a query for retrieval.")
         chunks4 = [c for c in chunk_list4 if c.strip()]
-        retriever = ChunkRetriever(model)
+        retriever = retrieval.ChunkRetriever(model)
         retriever.add_chunks(chunks4)
         st.subheader("Pooling Comparison Table")
         #compare_retrieval_pooling(retriever, query2)
         with io.StringIO() as buf, redirect_stdout(buf):
-            compare_retrieval_pooling(retriever, query2)
+            retrieval.compare_retrieval_pooling(retriever, query2)
             retrieval_output = buf.getvalue()
         st.text(retrieval_output)
         st.subheader("Chunk Geometry with Query")
-        result = plot_chunk_geometry(
+        result = visualization.plot_chunk_geometry(
             chunks4, model, strategy=strategy3, method=method3, query=query2,
             generate_explanation=generate_explanation, api_key=api_key, language=language
         )
